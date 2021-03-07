@@ -13,3 +13,6 @@ DATOS <- complete(DATOS)
 attach(DATOS)
 DATOS$Outcome <- as.factor(DATOS$Outcome)
 
+variables <- colnames(DATOS %>% select(-Outcome))
+
+

@@ -1,5 +1,6 @@
 # Calling libraries
 library(shiny)
+library(dplyr)
 library(shinyWidgets)
 library(RColorBrewer)
 library("mice")
@@ -24,8 +25,7 @@ DATOS <- mice(DATOS,m=1,method="pmm")
 DATOS <- complete(DATOS)
 attach(DATOS)
 
-
-vars <- setdiff(names(iris), "Species")
+variables <- setdiff(names(DATOS), "Outcome")
 
 
 # Define UI for application
@@ -62,9 +62,9 @@ ui <- navbarPage("Diabetes app",
                  ),
                  tabPanel("k-means clustering",
                      sidebarPanel(
-                         varSelectInput("select1", label= "Choose X Variable", vars, selected = 1),
-                         varSelectInput("select2", label= "Choose Y Variable", vars, selected = 2),
-                         numericInput('clusters', label= "Number of Clusters", 3, min = 1, max = 9)
+                         selectInput("select1", label= "Choose X Variable", variables, selected = 1),
+                         selectInput("select2", label= "Choose Y Variable", variables, selected = 2),
+                         numericInput('clusters', label= "Number of Clusters", 1, min = 1, max = 9)
                      ),
                      mainPanel(
                          plotOutput('plot_cluster')
@@ -118,16 +118,33 @@ server <- function(input, output, session) {
             ggplot(DATOS, aes_string(x = input$featureDisplay_x, 
                                   y = input$featureDisplay_y, 
                                   color = "Outcome")) + 
-                geom_point(size = 4, position = position_jitter(w = 0.1, h = 0.1)) + 
+                geom_point(size = 2) + 
                 labs(x = input$featureDisplay_x,
                      y = input$featureDisplay_y) +
-                fte_theme() + 
-                scale_color_manual(name = "Diabetes",values=c("#7A99AC", "#E4002B")) 
+                fte_theme()
         })          
         
     })
     
+    variables_elegidas <- reactive({
+        DATOS[, c(input$select1, input$select2)]
+    })
+    
+    clusters <- reactive({
+        kmeans(variables_elegidas(), input$clusters)
+    })
+    
+    output$plot_cluster <- renderPlot({
+        par(mar = c(5.1, 4.1, 0, 1))
+        plot(variables_elegidas(),
+             col = clusters()$cluster,
+             pch = 10, cex = 1)
+        points(clusters()$centers, pch = 1, cex = 1, lwd = 1)
+    })
+    
 }
+    
+
 
 # Run the application 
 shinyApp(ui = ui, server = server)

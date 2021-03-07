@@ -1,0 +1,24 @@
+---
+title: "feature_description"
+author: "Mauricio Marcos Fajgenbaun"
+date: "7/3/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##  Variables Description
+
+Pregnancy: quantitative - discrete
+Glucose: quantitative - continuous
+Blood Pressure: quantitative - continuous
+Skin Thickness: quantitative - continuous
+Insulin quantitative - continuous
+BMI: quantitative - continuous
+Diabetes Pedigree Function: quantitative - continuous
+Age: quantitative - discrete
+Outcome: qualitative- nominal
+
+The variable “Outcome” is a categorical variable that accounts for weather a specific person is diabetic (takes value = 1) or not diabetic (takes value = 0). 

@@ -1,10 +1,24 @@
+# Calling libraries
 library(shiny)
 library(RColorBrewer)
+library("mice")
 
+
+# Reading the data
 
 ColClasses=c(rep("numeric",9))
 DATOS=read.csv2("diabetes.csv",sep = ",",header = T, colClasses = ColClasses, dec = "." )
 feature.list <- colnames(DATOS)
+
+# Missing value Treatment
+
+data <- DATOS[2:8]
+data[data==0] <-  NA
+DATOS[2:8] <- data
+DATOS <- mice(DATOS,m=1,method="pmm")
+DATOS <- complete(DATOS)
+attach(DATOS)
+DATOS$Outcome <- as.factor(DATOS$Outcome)
 
 # Define UI for application
 

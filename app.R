@@ -1,5 +1,6 @@
 # Calling libraries
 library(shiny)
+library(shinyWidgets)
 library(RColorBrewer)
 library("mice")
 
@@ -28,7 +29,9 @@ attach(DATOS)
 
 ui <- navbarPage("Diabetes app",
                  tabPanel("Feature Inspection",
-                          fluidRow(                           
+                          fluidRow(
+                              tags$h2("Add a shiny app background image"),
+                              setBackgroundImage(src="https://fedesp.es/wp-content/uploads/2019/07/diagnostico-de-diabetes.jpg"),
                               column(4, selectInput("featureDisplay_x", 
                                                     label = h3("X-Axis Feature"), 
                                                     choices = feature.list,

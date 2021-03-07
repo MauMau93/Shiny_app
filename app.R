@@ -24,14 +24,18 @@ DATOS <- mice(DATOS,m=1,method="pmm")
 DATOS <- complete(DATOS)
 attach(DATOS)
 
+
+vars <- setdiff(names(iris), "Species")
+
+
 # Define UI for application
 
 
 ui <- navbarPage("Diabetes app",
                  tabPanel("Feature Inspection",
                           fluidRow(
-                              tags$h2("Add a shiny app background image"),
-                              setBackgroundImage(src="https://fedesp.es/wp-content/uploads/2019/07/diagnostico-de-diabetes.jpg"),
+                              #tags$h2("Add a shiny app background image"),
+                              #setBackgroundImage(src="https://fedesp.es/wp-content/uploads/2019/07/diagnostico-de-diabetes.jpg"),
                               column(4, selectInput("featureDisplay_x", 
                                                     label = h3("X-Axis Feature"), 
                                                     choices = feature.list,
@@ -56,8 +60,16 @@ ui <- navbarPage("Diabetes app",
                           
                           
                  ),
-                 
-                 
+                 tabPanel("k-means clustering",
+                     sidebarPanel(
+                         varSelectInput("select1", label= "Choose X Variable", vars, selected = 1),
+                         varSelectInput("select2", label= "Choose Y Variable", vars, selected = 2),
+                         numericInput('clusters', label= "Number of Clusters", 3, min = 1, max = 9)
+                     ),
+                     mainPanel(
+                         plotOutput('plot_cluster')
+                     )
+                 ),
                  tabPanel("Feature Descriptions",
                           fluidRow(
                               column(10,

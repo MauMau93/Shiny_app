@@ -1,15 +1,20 @@
 # Calling libraries
 library(shiny)
+library(ggplot2)
 library(dplyr)
 library(shinyWidgets)
 library(RColorBrewer)
 library("mice")
+library("devtools")
 
 
 # Reading the data
 
 ColClasses=c(rep("numeric",9))
-DATOS=read.csv2("diabetes.csv",sep = ",",header = T, colClasses = ColClasses, dec = "." )
+DATOS <- df <- read.csv("https://query.data.world/s/6fv7uilqs5np32khyfq7wdtg44me5o", header=TRUE, stringsAsFactors=FALSE)
+
+ColClasses=c(rep("numeric",9))
+
 feature.list <- colnames(DATOS)
 
 #Converting key variable into discrete

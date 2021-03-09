@@ -15,4 +15,17 @@ DATOS$Outcome <- as.factor(DATOS$Outcome)
 
 variables <- colnames(DATOS %>% select(-Outcome))
 
+DATOS <- read.csv(url("http://archive.ics.uci.edu/ml/machine-learning-databases/pima-indians-diabetes/"))
 
+install.packages(c("devtools"))
+devtools::install_github("ldurazo/kaggler")
+library(readr)
+library(kaggler)
+kgl_auth(creds_file = 'kaggle.json')
+response <- kgl_datasets_download_all(owner_dataset = "UCI Machine Learning")
+
+download.file(response[["url"]], "data/temp.zip", mode="wb")
+DATOS <- read_csv("https://www.kaggle.com/uciml/pima-indians-diabetes-database")
+
+datasets <- kgl_datasets_list()
+datasets

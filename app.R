@@ -163,13 +163,13 @@ server <- function(input, output, session) {
     
     
 
-    output$data <- renderPrint({
-        if(input$radio == 1){return('funciona? !')}
+    output$data <- renderTable({
+        if(input$radio == 1){
+            fit = kmeans(variables_elegidas(), input$clusters)
+            Assigned_Cluster <-  fit$cluster
+            d = data.frame(Assigned_Cluster,DATOS)
+            d[order(d$Assigned_Cluster),]}
         else{return("funciona!")}
-            #fit = kmeans(variables_elegidas(), input$clusters)
-            #Assigned_Cluster <-  fit$cluster
-            #d = data.frame(Assigned_Cluster,DATOS)
-            #d[order(d$Assigned_Cluster),]
         
         })
     

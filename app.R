@@ -6,6 +6,7 @@ library(shinyWidgets)
 library(RColorBrewer)
 library("mice")
 library("devtools")
+library("tidyverse")
 
 
 # Reading the data
@@ -69,11 +70,15 @@ ui <- navbarPage("Diabetes app",
                      sidebarPanel(
                          selectInput("select1", label= "Choose X Variable", variables, selected = 1),
                          selectInput("select2", label= "Choose Y Variable", variables, selected = 2),
-                         numericInput('clusters', label= "Number of Clusters", 1, min = 1, max = 9)
+                         sliderInput('clusters', label= "Number of Clusters", 1, min = 1, max = 9)
                      ),
                      mainPanel(
                          plotOutput('plot_cluster')
+                     ),
+                     dataPanel <- tabPanel("Data",
+                                           tableOutput("data")
                      )
+                     
                  ),
                  tabPanel("Feature Descriptions",
                           fluidRow(
@@ -139,13 +144,26 @@ server <- function(input, output, session) {
         kmeans(variables_elegidas(), input$clusters)
     })
     
+    
     output$plot_cluster <- renderPlot({
         par(mar = c(5.1, 4.1, 0, 1))
-        plot(variables_elegidas(),
+        plot(variables_elegidas(), main = "K-mean Clustering for Diabetic Sample",
              col = clusters()$cluster,
              pch = 10, cex = 1)
-        points(clusters()$centers, pch = 1, cex = 1, lwd = 1)
+        points(clusters()$centers, pch = 10, cex = 3, lwd = 3)
     })
+    
+    
+    
+
+    output$data <- renderTable({
+            fit = kmeans(variables_elegidas(), input$clusters)
+            Assigned_Cluster <-  fit$cluster
+            d = data.frame(Assigned_Cluster,DATOS)
+            d[order(d$Assigned_Cluster),]
+        
+        })
+    
     
 }
     

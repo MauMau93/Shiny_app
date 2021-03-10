@@ -17,15 +17,16 @@ variables <- colnames(DATOS %>% select(-Outcome))
 
 DATOS <- read.csv(url("http://archive.ics.uci.edu/ml/machine-learning-databases/pima-indians-diabetes/"))
 
-install.packages(c("devtools"))
-devtools::install_github("ldurazo/kaggler")
-library(readr)
-library(kaggler)
-kgl_auth(creds_file = 'kaggle.json')
-response <- kgl_datasets_download_all(owner_dataset = "UCI Machine Learning")
 
-download.file(response[["url"]], "data/temp.zip", mode="wb")
-DATOS <- read_csv("https://www.kaggle.com/uciml/pima-indians-diabetes-database")
+library(scatterplot3d)
+scatterplot3d(DATOS[,2:4], pch=20, color=rainbow(3)[DATOS$cluster])
 
-datasets <- kgl_datasets_list()
-datasets
+cluster <- kmeans(DATOS, centers = 4)
+fviz_cluster(cluster, DATOS)
+library(scatterplot3d)
+scatterplot3d(DATOS[,2:8], pch=20, color=rainbow(3)[km$cluster])
+
+kmeans(Glucose,BloodPressure, centers = 4)
+
+runGitHub("dtwclust","asardaes")
+            

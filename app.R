@@ -1,5 +1,6 @@
 # Calling libraries
 library("shiny")
+library("shinythemes")
 library("ggplot2")
 library("shinyWidgets")
 library("RColorBrewer")
@@ -36,7 +37,27 @@ variables <- setdiff(names(DATOS), "Outcome")
 # Define UI for application
 
 
-ui <- navbarPage("Diabetes app",
+ui <- navbarPage(theme = shinytheme("superhero"),
+                "Diabetes app",
+                tabPanel("General Information",
+                         fluidRow(
+                             column(10,
+                                    includeMarkdown("references.Rmd")
+                             )
+                         )
+                         
+                ),
+                
+                tabPanel("Feature Descriptions",
+                         fluidRow(
+                             column(10,
+                                    includeMarkdown("Untitled.Rmd")
+                             )
+                         )
+                         
+                ),
+                
+
                  tabPanel("Feature Inspection",
                           fluidRow(
                               #tags$h2("Add a shiny app background image"),
@@ -86,24 +107,8 @@ ui <- navbarPage("Diabetes app",
                                            tableOutput("data")
                      )
                      
-                 ),
-                 tabPanel("Feature Descriptions",
-                          fluidRow(
-                              column(10,
-                                     includeMarkdown("Untitled.Rmd")
-                              )
-                          )
-                          
-                 ),
-                 
-                 tabPanel("General Information",
-                          fluidRow(
-                              column(10,
-                                     includeMarkdown("references.Rmd")
-                              )
-                          )
-                          
                  )
+                 
 )
 
 server <- function(input, output, session) {

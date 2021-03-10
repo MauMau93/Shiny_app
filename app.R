@@ -73,9 +73,16 @@ ui <- navbarPage("Diabetes app",
                          sliderInput('clusters', label= "Number of Clusters", 1, min = 1, max = 9)
                      ),
                      mainPanel(
-                         plotOutput('plot_cluster')
+                         plotOutput('plot_cluster'),
+
                      ),
                      dataPanel <- tabPanel("Data",
+                                           radioButtons("radio", 
+                                                        label = HTML('<FONT color="red"><FONT size="5pt">Output Selection</FONT></FONT><br> <b>Choose a table output for the k-mean analysis ?</b>'),
+                                                        choices = list("Data" = 1, "Summary" = 2),
+                                                        selected = 1,
+                                                        inline = T,
+                                                        width = "100%"),      
                                            tableOutput("data")
                      )
                      
@@ -156,11 +163,13 @@ server <- function(input, output, session) {
     
     
 
-    output$data <- renderTable({
-            fit = kmeans(variables_elegidas(), input$clusters)
-            Assigned_Cluster <-  fit$cluster
-            d = data.frame(Assigned_Cluster,DATOS)
-            d[order(d$Assigned_Cluster),]
+    output$data <- renderPrint({
+        if(input$radio == 1){return('funciona? !')}
+        else{return("funciona!")}
+            #fit = kmeans(variables_elegidas(), input$clusters)
+            #Assigned_Cluster <-  fit$cluster
+            #d = data.frame(Assigned_Cluster,DATOS)
+            #d[order(d$Assigned_Cluster),]
         
         })
     

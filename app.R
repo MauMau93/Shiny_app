@@ -1,12 +1,11 @@
 # Calling libraries
-library(shiny)
-library(ggplot2)
-library(dplyr)
-library(shinyWidgets)
-library(RColorBrewer)
+library("shiny")
+library("ggplot2")
+library("shinyWidgets")
+library("RColorBrewer")
 library("mice")
-library("devtools")
 library("tidyverse")
+library("scatterplot3d")
 
 
 # Reading the data
@@ -70,6 +69,7 @@ ui <- navbarPage("Diabetes app",
                      sidebarPanel(
                          selectInput("select1", label= "Choose X Variable", variables, selected = 1),
                          selectInput("select2", label= "Choose Y Variable", variables, selected = 2),
+                         selectInput("select3", label= "Choose Z Variable", variables, selected = 3),
                          sliderInput('clusters', label= "Number of Clusters", 1, min = 1, max = 9)
                      ),
                      mainPanel(
@@ -79,7 +79,7 @@ ui <- navbarPage("Diabetes app",
                      dataPanel <- tabPanel("Data",
                                            radioButtons("radio", 
                                                         label = HTML('<FONT color="red"><FONT size="5pt">Output Selection</FONT></FONT><br> <b>Choose a table output for the k-mean analysis ?</b>'),
-                                                        choices = list("Data" = 1, "Summary" = 2),
+                                                        choices = list("Data" = 1, "Cluster Centroids" = 2, "Size" = 3, "Within-Cluster Sum of Squares" = 4, "Between-Cluster Sum of Squares" = 5),
                                                         selected = 1,
                                                         inline = T,
                                                         width = "100%"),      
@@ -144,7 +144,7 @@ server <- function(input, output, session) {
     })
     
     variables_elegidas <- reactive({
-        DATOS[, c(input$select1, input$select2)]
+        DATOS[, c(input$select1, input$select2, input$select3)]
     })
     
     clusters <- reactive({
@@ -153,11 +153,9 @@ server <- function(input, output, session) {
     
     
     output$plot_cluster <- renderPlot({
-        par(mar = c(5.1, 4.1, 0, 1))
-        plot(variables_elegidas(), main = "K-mean Clustering for Diabetic Sample",
-             col = clusters()$cluster,
-             pch = 10, cex = 1)
-        points(clusters()$centers, pch = 10, cex = 3, lwd = 3)
+        scatterplot3d(variables_elegidas(), color = clusters()$cluster,
+                      angle=40,pch=16,grid=TRUE,box=FALSE)
+                     
     })
     
     
@@ -165,11 +163,29 @@ server <- function(input, output, session) {
 
     output$data <- renderTable({
         if(input$radio == 1){
-            fit = kmeans(variables_elegidas(), input$clusters)
+            fit <- kmeans(variables_elegidas(), input$clusters)
             Assigned_Cluster <-  fit$cluster
-            d = data.frame(Assigned_Cluster,DATOS)
+            d <- data.frame(Assigned_Cluster,DATOS)
             d[order(d$Assigned_Cluster),]}
-        else{return("funciona!")}
+        else if  (input$radio == 2){
+            fit <- kmeans(variables_elegidas(), input$clusters)
+            Centroids <- fit$centers
+            f <- data.frame(Centroids)
+            f}
+        else if ( input$radio == 3){
+            fit <- kmeans(variables_elegidas(), input$clusters)
+            Size <- data.frame(fit$size)
+            cbind(Size,row_number(Size))
+            }
+        else if ( input$radio == 4){
+            fit <- kmeans(variables_elegidas(), input$clusters)
+            With <- data.frame(fit$withinss)
+            With
+            }
+        else{
+            fit <- kmeans(variables_elegidas(), input$clusters)
+            Bet <- data.frame(fit$betweenss)
+            Bet}
         
         })
     

@@ -43,18 +43,56 @@ library("shinyWidgets")
 library("plotly")
 library("tidyverse")
 library("scatterplot3d")
-library("magrittr")
 ```
 
 
+## Plots
 
 First, we can visualize a histogram for both of the different variables selected and a scatter plot of one variable against the other one. Keep in mind that any variable will be grouped by diabetic (outcome = 0) and not diabetic (outcome = 1).
 
 ```{r,echo=FALSE}
 x <- DATOS%>% select(params$X_scatter)
 y <- DATOS%>% select(params$Y_scatter)
-z <- DATOS%>% select(Outcome)
 x=as.vector(as.matrix(x))
 y=as.vector(as.matrix(y))
-ggplot(params$DATOS,aes(x=x,y=y,color = "z"))+geom_point(size = 2) 
 ```
+
+Histogram of both variables:
+
+```{r}
+ggplot(params$DATOS, aes(x=x, 
+                                  fill = "Outcome")) + 
+                geom_histogram(position = "dodge") +
+                labs(x = x,
+                     y = "Count") +
+                scale_fill_manual(guide = F,values=c("#7A99AC", "#E4002B")) 
+
+ggplot(params$DATOS, aes(x=y, 
+                                  fill = "Outcome")) + 
+                geom_histogram(position = "dodge") +
+                labs(x = y,
+                     y = "Count") +
+                scale_fill_manual(guide = F,values=c("#7A99AC", "#E4002B")) 
+```
+
+
+Scatterplot of first variable against second variable:
+
+```{r}
+ggplot(params$DATOS,aes(x=x,y=y,color = "Outcome"))+geom_point(size = 2) + labs(x = x,
+                     y = y) 
+```
+
+#```{r,echo=FALSE}
+a <- DATOS%>% select(params$knn_x)
+b <- DATOS%>% select(params$knn_y)
+c <- DATOS%>% select(params$knn_z)
+a=as.vector(as.matrix(a))
+b=as.vector(as.matrix(b))
+c=as.vector(as.matrix(c))
+variables_elegidas <- DATOS[, c(a,b,c)]
+clusters <- kmeans(variables_elegidas, input$clusters)
+scatterplot3d(variables_elegidas, color = clusters()$cluster,
+                      angle=40,pch=16,grid=TRUE,box=FALSE)
+```
+

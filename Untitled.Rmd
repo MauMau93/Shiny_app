@@ -5,24 +5,24 @@ date: "7/3/2021"
 output: html_document
 ---
 
-###  Variables Description
+#  Variables Description
 
-Pregnancy: quantitative - discrete
+*Pregnancy*: quantitative - discrete
 
-Glucose: quantitative - continuous
+*Glucose*: quantitative - continuous
 
-Blood Pressure: quantitative - continuous
+*Blood Pressure*: quantitative - continuous
 
-Skin Thickness: quantitative - continuous
+*Skin Thickness*: quantitative - continuous
 
-Insulin quantitative - continuous
+*Insulin*: quantitative - continuous
 
-BMI: quantitative - continuous
+*BMI*: quantitative - continuous
 
-Diabetes Pedigree Function: quantitative - continuous
+*Diabetes Pedigree Function*: quantitative - continuous
 
-Age: quantitative - discrete
+*Age*: quantitative - discrete
 
-Outcome: qualitative- nominal
+*Outcome*: qualitative- nominal
 
-The variable “Outcome” is a categorical variable that accounts for weather a specific person is diabetic (takes value = 1) or not diabetic (takes value = 0). 
+The variable **Outcome** is a categorical variable that accounts for weather a specific person is diabetic (takes value = 1) or not diabetic (takes value = 0). 

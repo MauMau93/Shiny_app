@@ -175,7 +175,7 @@ server <- function(input, output, session) {
         })          
         
     })
-    #Códe for clustering
+    #Code for clustering
     variables_elegidas <- reactive({
         DATOS[, c(input$select1, input$select2, input$select3)]
     })

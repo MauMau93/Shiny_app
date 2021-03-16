@@ -2,17 +2,21 @@
 library("shiny")
 library("shinythemes")
 library("ggplot2")
+library("plotly")
 library("shinyWidgets")
 library("RColorBrewer")
 library("mice")
 library("tidyverse")
 library("scatterplot3d")
+library("shinyjs")
+library("DT")
+
 
 
 # Reading the data
 
 ColClasses=c(rep("numeric",9))
-DATOS <- df <- read.csv("https://query.data.world/s/6fv7uilqs5np32khyfq7wdtg44me5o", header=TRUE, stringsAsFactors=FALSE)
+DATOS <- read.csv("https://query.data.world/s/6fv7uilqs5np32khyfq7wdtg44me5o", header=TRUE, stringsAsFactors=FALSE)
 
 ColClasses=c(rep("numeric",9))
 
@@ -33,12 +37,17 @@ attach(DATOS)
 
 variables <- setdiff(names(DATOS), "Outcome")
 
+myHeader <- div(id="advanced",
+                useShinyjs(),
+                downloadButton("report", "Generate report"))
 
 # Define UI for application
 
 
 ui <- navbarPage(theme = shinytheme("superhero"),
                 "Diabetes app",
+                header = myHeader,
+                #First Panel
                 tabPanel("General Information",
                          fluidRow(
                              column(10,
@@ -48,6 +57,7 @@ ui <- navbarPage(theme = shinytheme("superhero"),
                          
                 ),
                 
+                #Second Panel
                 tabPanel("Feature Descriptions",
                          fluidRow(
                              column(10,
@@ -57,7 +67,23 @@ ui <- navbarPage(theme = shinytheme("superhero"),
                          
                 ),
                 
+                #New Panel: data table with filtering
+                
+                tabPanel("Sample Inspection",
+                         tabsetPanel(
+                             tabPanel("Summary", value=0,verbatimTextOutput("Summary")),
+                             tabPanel("Data Structure", value=1,verbatimTextOutput("Structure")),
+                             tabPanel("Data Table", value=2, dataTableOutput("Filtered_Table"))
+                             
+                         )),
+                         
 
+                                     
+                                 
+                             #)),
+        
+                
+                #Third Panel: basic descriptive plots
                  tabPanel("Feature Inspection",
                           fluidRow(
                               #tags$h2("Add a shiny app background image"),
@@ -74,18 +100,20 @@ ui <- navbarPage(theme = shinytheme("superhero"),
                           ),
                           fluidRow(
                               column(4,
-                                     plotOutput("distPlotA")
+                                     plotlyOutput("distPlotA")
                               ),                              
                               column(4,
-                                     plotOutput("distPlotB")      
+                                     plotlyOutput("distPlotB")      
                               ),
                               column(4,
-                                     plotOutput("ScatterPlot")
-                              )
+                                     plotlyOutput("ScatterPlot")
+                              ),
+                             
                           )
                           
                           
                  ),
+                # Fourth Panel: Clustering
                  tabPanel("k-means clustering",
                      sidebarPanel(
                          selectInput("select1", label= "Choose X Variable", variables, selected = 1),
@@ -99,7 +127,7 @@ ui <- navbarPage(theme = shinytheme("superhero"),
                      ),
                      dataPanel <- tabPanel("Data",
                                            radioButtons("radio", 
-                                                        label = HTML('<FONT color="red"><FONT size="5pt">Output Selection</FONT></FONT><br> <b>Choose a table output for the k-mean analysis ?</b>'),
+                                                        label = HTML('<FONT color="red"><FONT size="5pt">Output Selection</FONT></FONT><br> <b>Choose a table output for the k-mean analysis</b>'),
                                                         choices = list("Data" = 1, "Cluster Centroids" = 2, "Size" = 3, "Within-Cluster Sum of Squares" = 4, "Between-Cluster Sum of Squares" = 5),
                                                         selected = 1,
                                                         inline = T,
@@ -116,7 +144,7 @@ server <- function(input, output, session) {
         input_feature_x <- as.symbol(input$featureDisplay_x)
         input_feature_y <- as.symbol(input$featureDisplay_y)
         
-        output$distPlotA <- renderPlot({
+        output$distPlotA <- renderPlotly({
             ggplot(DATOS, aes_string(input$featureDisplay_x, fill = "Outcome")) + 
                 geom_histogram(position = "dodge") + 
                 labs(x = input$featureDisplay_x,
@@ -125,7 +153,7 @@ server <- function(input, output, session) {
             
         })
         
-        output$distPlotB <- renderPlot({
+        output$distPlotB <- renderPlotly({
             ggplot(DATOS, aes_string(input$featureDisplay_y, 
                                   fill = "Outcome")) + 
                 geom_histogram(position = "dodge") +
@@ -136,18 +164,18 @@ server <- function(input, output, session) {
             
         })
         
-        output$ScatterPlot <- renderPlot({
-            ggplot(DATOS, aes_string(x = input$featureDisplay_x, 
+        output$ScatterPlot <- renderPlotly({
+          ggplot(DATOS, aes_string(x = input$featureDisplay_x, 
                                   y = input$featureDisplay_y, 
                                   color = "Outcome")) + 
                 geom_point(size = 2) + 
                 labs(x = input$featureDisplay_x,
-                     y = input$featureDisplay_y) +
-                fte_theme()
+                     y = input$featureDisplay_y)
+
         })          
         
     })
-    
+    #Códe for clustering
     variables_elegidas <- reactive({
         DATOS[, c(input$select1, input$select2, input$select3)]
     })
@@ -171,28 +199,82 @@ server <- function(input, output, session) {
             fit <- kmeans(variables_elegidas(), input$clusters)
             Assigned_Cluster <-  fit$cluster
             d <- data.frame(Assigned_Cluster,DATOS)
-            d[order(d$Assigned_Cluster),]}
+            d[order(d$Assigned_Cluster),]
+            }
         else if  (input$radio == 2){
             fit <- kmeans(variables_elegidas(), input$clusters)
             Centroids <- fit$centers
             f <- data.frame(Centroids)
-            f}
+            }
         else if ( input$radio == 3){
             fit <- kmeans(variables_elegidas(), input$clusters)
             Size <- data.frame(fit$size)
-            cbind(Size,row_number(Size))
+            Size <- cbind(row_number(Size),Size)
             }
         else if ( input$radio == 4){
             fit <- kmeans(variables_elegidas(), input$clusters)
             With <- data.frame(fit$withinss)
-            With
             }
         else{
             fit <- kmeans(variables_elegidas(), input$clusters)
             Bet <- data.frame(fit$betweenss)
             Bet}
+    
         
         })
+    
+    # Code for the data inspection
+    output$Filtered_Table <- renderDataTable({ 
+                            DATOS},
+                            filter = 'top',
+                            rownames = FALSE,class = 'cell-border stripe',
+                            caption = "This is a table with all the sample database",options = list(
+                                initComplete = JS("function(settings, json) {",
+                                    "$(this.api().table().header()).css({'background-color': '#000', 'color': 'white'});",
+                                    "}")
+                            ))
+    
+    output$Summary <- renderPrint({
+        summary(DATOS)
+    })
+    
+    output$Structure <- renderPrint({
+        str(DATOS)
+    })
+    
+    
+    #Code for the report
+    output$report <- downloadHandler(
+        # For PDF output, change this to "report.pdf"
+        filename = "report.pdf",
+        content = function(file) {
+            # Copy the report file to a temporary directory before processing it, in
+            # case we don't have write permissions to the current working dir (which
+            # can happen when deployed).
+            tempReport <- file.path(tempdir(), "report.Rmd")
+            file.copy("report.Rmd", tempReport, overwrite = TRUE)
+            
+            # Set up parameters to pass to Rmd document
+            params <- list(
+                featureDisplay_x = isolate(input$featureDisplay_x),
+                featureDisplay_y = isolate(input$featureDisplay_y),
+                select1 = isolate(input$select1),
+                select2 = isolate(input$select2),
+                select3 = isolate(input$select3)
+                
+                
+            )
+            
+            # Knit the document, passing in the `params` list, and eval it in a
+            # child of the global environment (this isolates the code in the document
+            # from the code in this app).
+            rmarkdown::render(tempReport, output_file = file,
+                              params = params,
+                              envir = new.env(parent = globalenv())
+            )
+        }
+    )
+        
     
     
 }

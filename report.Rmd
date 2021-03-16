@@ -1,47 +1,60 @@
 ---
-title: "report"
+title: "Report"
 author: "Mauricio Marcos Fajgenbaun"
 date: "11/3/2021"
 output: pdf_document
 params: 
-  n_sample: 100
-  dist: 'rnorm'
-  breaks: 7
+  DATOS: NA
+  X_scatter: NA
+  Y_scatter: NA
+  knn_x: NA
+  knn_y: NA
+  knn_z: NA
 ---
 
+# This is a report on the Shiny app about diabetes pima indian women.
 
 
+## Data Description
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+
+For this research, we selected a data set of the *Diabetes*. Diabetes is an illness that occurs when the sugar in blood (also called glucose) is too high. At the same time, insulin (produced by the pancreas), is produced to help the glucose make it to human cells. When the pancreas does not produce enough insulin or none at all, then this glucose remains in the blood causing serious health issues.
+
+
+With the years, diabetes had become a larger problem, especially for western societies. Eating fast food or high-processed meals have led to enormous ingestions of sugar and, with this, an historical increase of diabetes in most countries of the world. 
+
+
+This dataset is originally from the National Institute of Diabetes and Digestive and Kidney Diseases. The main objective that explains the reason of the existence of this data set, is to diagnostically predict weather or not a patient has diabetes, based on certain measurements of several variables that are included in the dataset. At the same time, this database contains only data of women of at least 21 years old of Pima Indian heritage (north American indigenous women, that live in the State of Arizona and the Mexican states of Sonora and Chihuahua).  Diabetes is quite prevalent in this group of Native Americans living in those places in particular. 
+
+
+So, we can say that the aim is to study the cause of diabetes in this particular ethnic group. This disease was very uncommon in Pima Indians until the second half of the 20th Century. Nevertheless, as King et al. informs in 1993, the highest prevalence of type 2 diabetes in the world was found in this particular ethnic group, as more than half of the women older than 35 years-old would suffer from this disease. 
+
+
+So, in this research we will study how health predictors are associated with the presence of diabetes in Pima Indians. According to the World Health Organization criteria, if the 2-hour post-load plasma glucose was at least 200 mg/dl at any survey examination or if found during any moutine medical care. 
+
+
+In this dataset, 768 women were registered in the database. From this total, a 35% (268 in total) had diabetes, while the rest (500: 65%) did not suffer from this disease.
+
+
+```{r,echo=FALSE}
+library("shiny")
+library("ggplot2")
+library("shinyWidgets")
+library("plotly")
+library("tidyverse")
+library("scatterplot3d")
+library("magrittr")
 ```
 
-```{r}
-params$select1
-params$select2
-params$select3
-params$select1
-params$select1
-featureDisplay_x
-featureDisplay_y
-```
 
 
----
-```{r include=FALSE}
-  dist <- eval(parse(text=paste(params$dist)))
-```
+First, we can visualize a histogram for both of the different variables selected and a scatter plot of one variable against the other one. Keep in mind that any variable will be grouped by diabetic (outcome = 0) and not diabetic (outcome = 1).
 
-```{r}
-# The `params` object is available in the document.
-params$n_sample
-```
-
-A histogram of `r params$n_sample` random points with `r params$dist` distribution
-
-<pre class="r"><code class="hljs">hist(`r params$dist`(`r params$n_sample`), breaks=<span class="hljs-string">"`r params$breaks`"</span>, main=<span class="hljs-string">"Random Generation"</span>)</code></pre>
-
-```{r echo=FALSE}
-xname <- paste(params$dist,"(",params$n_sample,")",sep='')
-hist(dist(params$n_sample), breaks=params$breaks, main="Random Generation", xlab = xname )
+```{r,echo=FALSE}
+x <- DATOS%>% select(params$X_scatter)
+y <- DATOS%>% select(params$Y_scatter)
+z <- DATOS%>% select(Outcome)
+x=as.vector(as.matrix(x))
+y=as.vector(as.matrix(y))
+ggplot(params$DATOS,aes(x=x,y=y,color = "z"))+geom_point(size = 2) 
 ```

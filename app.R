@@ -148,7 +148,7 @@ server <- function(input, output, session) {
             ggplot(DATOS, aes_string(input$featureDisplay_x, fill = "Outcome")) + 
                 geom_histogram(position = "dodge") + 
                 labs(x = input$featureDisplay_x,
-                     y = "Count") + fte_theme() +
+                     y = "Count") + 
                 scale_fill_manual(guide = F,values=c("#7A99AC", "#E4002B")) 
             
         })
@@ -158,7 +158,7 @@ server <- function(input, output, session) {
                                   fill = "Outcome")) + 
                 geom_histogram(position = "dodge") +
                 labs(x = input$featureDisplay_y,
-                     y = "Count") + fte_theme() +
+                     y = "Count") +
                 scale_fill_manual(guide = F,values=c("#7A99AC", "#E4002B")) 
             
             
@@ -256,11 +256,12 @@ server <- function(input, output, session) {
             
             # Set up parameters to pass to Rmd document
             params <- list(
-                featureDisplay_x = isolate(input$featureDisplay_x),
-                featureDisplay_y = isolate(input$featureDisplay_y),
-                select1 = isolate(input$select1),
-                select2 = isolate(input$select2),
-                select3 = isolate(input$select3)
+                DATOS = DATOS,
+                X_scatter = isolate(input$featureDisplay_x),
+                Y_scatter = isolate(input$featureDisplay_y),
+                knn_x = isolate(input$select1),
+                knn_y = isolate(input$select2),
+                knn_z = isolate(input$select3)
                 
                 
             )

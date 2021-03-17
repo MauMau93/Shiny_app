@@ -27,7 +27,6 @@ DATOS$Outcome <- as.factor(DATOS$Outcome)
 
 
 # Missing value Treatment with "Mice" Library
-
 data <- DATOS[2:8]
 data[data==0] <-  NA
 DATOS[2:8] <- data

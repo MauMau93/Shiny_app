@@ -4,6 +4,8 @@ ColClasses=c(rep("numeric",9))
 DATOS=read.csv2("diabetes.csv",sep = ",",header = T, colClasses = ColClasses, dec = "." )
 summary(DATOS)
 
+DATOS <- read.csv("https://query.data.world/s/6fv7uilqs5np32khyfq7wdtg44me5o", header=TRUE, stringsAsFactors=FALSE)
+DATOS
 #Taking out NAs and converting variable into factor
 data <- DATOS[2:8]
 data[data==0] <-  NA

@@ -20,7 +20,7 @@ DATOS <- read.csv("https://query.data.world/s/6fv7uilqs5np32khyfq7wdtg44me5o", h
 
 ColClasses=c(rep("numeric",9))
 
-feature.list <- colnames(DATOS)
+feature.list <- setdiff(names(DATOS),"Outcome")
 
 #Converting key variable into discrete
 DATOS$Outcome <- as.factor(DATOS$Outcome)
@@ -47,6 +47,14 @@ myHeader <- div(id="advanced",
 ui <- navbarPage(theme = shinytheme("superhero"),
                 "Diabetes app",
                 header = myHeader,
+                #Zero Panel
+                tabPanel("Instructions",
+                         fluidRow(
+                             column(10,
+                                    includeMarkdown("instructions.Rmd")
+                                    )
+                         )
+                         ),
                 #First Panel
                 tabPanel("General Information",
                          fluidRow(

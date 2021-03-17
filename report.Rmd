@@ -60,7 +60,7 @@ y=as.vector(as.matrix(y))
 
 Histogram of both variables:
 
-```{r}
+```{r,echo=FALSE}
 ggplot(params$DATOS, aes(x=x, 
       fill = "Outcome")) + geom_histogram(position = "dodge") +
       labs(x = params$X_scatter,y = "Count") +
@@ -75,18 +75,42 @@ ggplot(params$DATOS, aes(x=y, fill = "Outcome")) +
 
 Scatterplot of first variable against second variable:
 
-```{r}
+```{r,echo=FALSE}
 ggplot(params$DATOS,aes(x=x,y=y,color = "Outcome"))+geom_point(size = 2) + 
       labs(x = params$X_scatter,y = params$Y_scatter) 
 ```
 
-Plot of the K-means
+## K-means
 
-```{r}
+You have chosen the following variables to perform the k-mean cluster algorithm:
+
+```{r,echo=FALSE}
+params$knn_x
+params$knn_y
+params$knn_z
+```
+
+you have also chosen the following number of clusters:
+```{r,echo=FALSE}
+params$clusters
+```
+
+
+We can see that according to the number of clusters chosen, we have the following centroids:
+
+```{r,echo=FALSE}
 variables_elegidas <- DATOS[, c(params$knn_x, params$knn_y, params$knn_z)]
-clusters <- kmeans(variables_elegidas, params$clusters)
-colors <- as.numeric(params$clusters)
-scatterplot3d(variables_elegidas, color = colors,
-                      angle=40,pch=16,grid=TRUE,box=FALSE)
+fit <- kmeans(variables_elegidas, params$clusters)
+Centroids <- fit$centers
+f <- data.frame(Centroids)
+f
+```
+
+And this are the sizes of the clusters:
+
+```{r,echo=FALSE}
+Size <- data.frame(fit$size)
+Size <- cbind(row_number(Size),Size)
+Size
 ```
 

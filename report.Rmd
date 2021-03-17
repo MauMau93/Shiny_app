@@ -49,7 +49,7 @@ library("scatterplot3d")
 
 ## Plots
 
-First, we can visualize a histogram for both of the different variables selected and a scatter plot of one variable against the other one. Keep in mind that any variable will be grouped by diabetic (outcome = 0) and not diabetic (outcome = 1).
+First, we can visualize a histogram for both of the different variables selected and a scatter plot for them two.
 
 ```{r,echo=FALSE}
 x <- DATOS%>% select(params$X_scatter)
@@ -58,15 +58,21 @@ x=as.vector(as.matrix(x))
 y=as.vector(as.matrix(y))
 ```
 
-Histogram of both variables:
+You have chose the following variables to inspect:
 
 ```{r,echo=FALSE}
-ggplot(params$DATOS, aes(x=x, 
-      fill = "Outcome")) + geom_histogram(position = "dodge") +
+params$X_scatter
+params$Y_scatter
+```
+
+
+
+```{r,echo=FALSE}
+ggplot(params$DATOS, aes(x=x)) + geom_histogram(position = "dodge") +
       labs(x = params$X_scatter,y = "Count") +
       scale_fill_manual(guide = F,values=c("#7A99AC", "#E4002B")) 
 
-ggplot(params$DATOS, aes(x=y, fill = "Outcome")) + 
+ggplot(params$DATOS, aes(x=y)) + 
       geom_histogram(position = "dodge") +
       labs(x = params$Y_scatter,y = "Count") +
       scale_fill_manual(guide = F,values=c("#7A99AC", "#E4002B")) 
@@ -76,7 +82,7 @@ ggplot(params$DATOS, aes(x=y, fill = "Outcome")) +
 Scatterplot of first variable against second variable:
 
 ```{r,echo=FALSE}
-ggplot(params$DATOS,aes(x=x,y=y,color = "Outcome"))+geom_point(size = 2) + 
+ggplot(params$DATOS,aes(x=x,y=y))+geom_point(size = 2) + 
       labs(x = params$X_scatter,y = params$Y_scatter) 
 ```
 

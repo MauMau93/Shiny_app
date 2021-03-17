@@ -26,7 +26,7 @@ feature.list <- setdiff(names(DATOS),"Outcome")
 DATOS$Outcome <- as.factor(DATOS$Outcome)
 
 
-# Missing value Treatment
+# Missing value Treatment with "Mice" Library
 
 data <- DATOS[2:8]
 data[data==0] <-  NA
@@ -44,7 +44,7 @@ myHeader <- div(id="advanced",
 # Define UI for application
 
 
-ui <- navbarPage(theme = shinytheme("superhero"),
+ui <- navbarPage(theme = shinytheme("journal"),
                 "Diabetes app",
                 header = myHeader,
                 #Zero Panel
@@ -72,11 +72,12 @@ ui <- navbarPage(theme = shinytheme("superhero"),
                                     includeMarkdown("Untitled.Rmd"),
                                     useShinyjs(),
                                     actionButton("button", "More Information"),
-                                    div(id = "boton", 
+                                    div(id = "boton",
                                         p(),
                                         p(),
-                                        p("If you are looking for more information on Diabetes, you can search in the following page: https://medlineplus.gov/spanish/diabetes.html#:~:text=La%20diabetes%20es%20una%20enfermedad,el%20cuerpo%20no%20produce%20insulina.")
-                                    ),
+                                        hidden(
+                                        p(id="vanish","If you are looking for more information on Diabetes, you can search in the following page: https://medlineplus.gov/spanish/diabetes.html#:~:text=La%20diabetes%20es%20una%20enfermedad,el%20cuerpo%20no%20produce%20insulina.")
+                                   ) ),
                              
                              )
                              
@@ -194,7 +195,7 @@ server <- function(input, output, session) {
         
         #Code for showing and hidding button
         observeEvent(input$button, {
-            toggle("boton")
+            toggle("vanish")
         })
 
                   

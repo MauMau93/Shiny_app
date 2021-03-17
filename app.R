@@ -61,8 +61,17 @@ ui <- navbarPage(theme = shinytheme("superhero"),
                 tabPanel("Feature Descriptions",
                          fluidRow(
                              column(10,
-                                    includeMarkdown("Untitled.Rmd")
+                                    includeMarkdown("Untitled.Rmd"),
+                                    useShinyjs(),
+                                    actionButton("button", "More Information"),
+                                    div(id = "boton", 
+                                        p(),
+                                        p(),
+                                        p("If you are looking for more information on Diabetes, you can search in the following page: https://medlineplus.gov/spanish/diabetes.html#:~:text=La%20diabetes%20es%20una%20enfermedad,el%20cuerpo%20no%20produce%20insulina.")
+                                    ),
+                             
                              )
+                             
                          )
                          
                 ),
@@ -80,14 +89,12 @@ ui <- navbarPage(theme = shinytheme("superhero"),
 
                                      
                                  
-                             #)),
+                 
         
                 
                 #Third Panel: basic descriptive plots
                  tabPanel("Feature Inspection",
                           fluidRow(
-                              #tags$h2("Add a shiny app background image"),
-                              #setBackgroundImage(src="https://fedesp.es/wp-content/uploads/2019/07/diagnostico-de-diabetes.jpg"),
                               column(4, selectInput("featureDisplay_x", 
                                                     label = h3("X-Axis Feature"), 
                                                     choices = feature.list,
@@ -106,7 +113,8 @@ ui <- navbarPage(theme = shinytheme("superhero"),
                                      plotlyOutput("distPlotB")      
                               ),
                               column(4,
-                                     plotlyOutput("ScatterPlot")
+                                     plotOutput("ScatterPlot", click="plot_click"),
+                                     verbatimTextOutput("point")
                               ),
                              
                           )
@@ -122,7 +130,7 @@ ui <- navbarPage(theme = shinytheme("superhero"),
                          sliderInput('clusters', label= "Number of Clusters", 1, min = 1, max = 9)
                      ),
                      mainPanel(
-                         plotOutput('plot_cluster'),
+                         plotOutput("plot_cluster")
 
                      ),
                      dataPanel <- tabPanel("Data",
@@ -164,15 +172,24 @@ server <- function(input, output, session) {
             
         })
         
-        output$ScatterPlot <- renderPlotly({
-          ggplot(DATOS, aes_string(x = input$featureDisplay_x, 
+        output$ScatterPlot <- renderPlot(
+                                ggplot(DATOS, aes_string(x = input$featureDisplay_x, 
                                   y = input$featureDisplay_y, 
                                   color = "Outcome")) + 
-                geom_point(size = 2) + 
-                labs(x = input$featureDisplay_x,
-                     y = input$featureDisplay_y)
+                                geom_point(size = 2) + 
+                                labs(x = input$featureDisplay_x,
+                                  y = input$featureDisplay_y))
+            
+        output$point <- renderText({
+                paste0(input$featureDisplay_x, "=", input$plot_click$x, "\n",input$featureDisplay_y,"=", input$plot_click$y)
+            })
+        
+        #Code for showing and hidding button
+        observeEvent(input$button, {
+            toggle("boton")
+        })
 
-        })          
+                  
         
     })
     #Code for clustering
@@ -190,6 +207,8 @@ server <- function(input, output, session) {
                       angle=40,pch=16,grid=TRUE,box=FALSE)
                      
     })
+    
+   
     
     
     
@@ -261,7 +280,8 @@ server <- function(input, output, session) {
                 Y_scatter = isolate(input$featureDisplay_y),
                 knn_x = isolate(input$select1),
                 knn_y = isolate(input$select2),
-                knn_z = isolate(input$select3)
+                knn_z = isolate(input$select3),
+                clusters = isolate(input$clusters)
                 
                 
             )

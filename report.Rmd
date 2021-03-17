@@ -10,6 +10,7 @@ params:
   knn_x: NA
   knn_y: NA
   knn_z: NA
+  clusters: NA
 ---
 
 # This is a report on the Shiny app about diabetes pima indian women.
@@ -61,38 +62,31 @@ Histogram of both variables:
 
 ```{r}
 ggplot(params$DATOS, aes(x=x, 
-                                  fill = "Outcome")) + 
-                geom_histogram(position = "dodge") +
-                labs(x = x,
-                     y = "Count") +
-                scale_fill_manual(guide = F,values=c("#7A99AC", "#E4002B")) 
+      fill = "Outcome")) + geom_histogram(position = "dodge") +
+      labs(x = params$X_scatter,y = "Count") +
+      scale_fill_manual(guide = F,values=c("#7A99AC", "#E4002B")) 
 
-ggplot(params$DATOS, aes(x=y, 
-                                  fill = "Outcome")) + 
-                geom_histogram(position = "dodge") +
-                labs(x = y,
-                     y = "Count") +
-                scale_fill_manual(guide = F,values=c("#7A99AC", "#E4002B")) 
+ggplot(params$DATOS, aes(x=y, fill = "Outcome")) + 
+      geom_histogram(position = "dodge") +
+      labs(x = params$Y_scatter,y = "Count") +
+      scale_fill_manual(guide = F,values=c("#7A99AC", "#E4002B")) 
 ```
 
 
 Scatterplot of first variable against second variable:
 
 ```{r}
-ggplot(params$DATOS,aes(x=x,y=y,color = "Outcome"))+geom_point(size = 2) + labs(x = x,
-                     y = y) 
+ggplot(params$DATOS,aes(x=x,y=y,color = "Outcome"))+geom_point(size = 2) + 
+      labs(x = params$X_scatter,y = params$Y_scatter) 
 ```
 
-#```{r,echo=FALSE}
-a <- DATOS%>% select(params$knn_x)
-b <- DATOS%>% select(params$knn_y)
-c <- DATOS%>% select(params$knn_z)
-a=as.vector(as.matrix(a))
-b=as.vector(as.matrix(b))
-c=as.vector(as.matrix(c))
-variables_elegidas <- DATOS[, c(a,b,c)]
-clusters <- kmeans(variables_elegidas, input$clusters)
-scatterplot3d(variables_elegidas, color = clusters()$cluster,
+Plot of the K-means
+
+```{r}
+variables_elegidas <- DATOS[, c(params$knn_x, params$knn_y, params$knn_z)]
+clusters <- kmeans(variables_elegidas, params$clusters)
+colors <- as.numeric(params$clusters)
+scatterplot3d(variables_elegidas, color = colors,
                       angle=40,pch=16,grid=TRUE,box=FALSE)
 ```
 

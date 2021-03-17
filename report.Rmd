@@ -51,6 +51,7 @@ library("scatterplot3d")
 First, we can visualize a histogram for both of the different variables selected and a scatter plot for them two.
 
 ```{r,echo=FALSE}
+DATOS <- params$DATOS
 x <- DATOS%>% select(params$X_scatter)
 y <- DATOS%>% select(params$Y_scatter)
 x=as.vector(as.matrix(x))
@@ -61,7 +62,6 @@ Outcome <- params$DATOS[,9]
 You have chose the following variables to inspect:
 
 ```{r,echo=FALSE}
-DATOS <- params$DATOS
 params$X_scatter
 params$Y_scatter
 ```

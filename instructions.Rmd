@@ -5,7 +5,7 @@ date: "17/3/2021"
 output: html_document
 ---
 
-# Instrucions for using Shiny App
+# Instructions for using Shiny App
 
 The app has 5 different pages: **General Information**, **Feature Description**, **Sample Inspection**, **Feature Inspection** and **K-means Clustering**.
 

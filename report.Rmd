@@ -68,13 +68,17 @@ params$Y_scatter
 
 ## The histograms:
 
+Both histograms will be ploted by group: diabetic (red) and non diabetic (grey).
+
 ```{r,echo=FALSE}
-ggplot(params$DATOS, aes(x=x)) + geom_histogram(position = "dodge") +
+DATOS %>% ggplot(aes(x=x,fill = Outcome)) + geom_histogram(position = "dodge") +
+      ggtitle(params$X_scatter)+
       labs(x = params$X_scatter,y = "Count") +
       scale_fill_manual(guide = F,values=c("#7A99AC", "#E4002B")) 
 
-ggplot(params$DATOS, aes(x=y)) + 
+DATOS %>% ggplot(aes(x=y, fill = Outcome)) + 
       geom_histogram(position = "dodge") +
+      ggtitle(params$Y_scatter)+
       labs(x = params$Y_scatter,y = "Count") +
       scale_fill_manual(guide = F,values=c("#7A99AC", "#E4002B")) 
 ```
@@ -83,7 +87,7 @@ ggplot(params$DATOS, aes(x=y)) +
 Scatterplot of first variable against second variable:
 
 ```{r,echo=FALSE}
-ggplot(params$DATOS,aes(x=x,y=y))+geom_point(size = 2) + 
+DATOS %>% ggplot(aes(x = x, y = y, color = Outcome)) + geom_point(size = 2) + 
       labs(x = params$X_scatter,y = params$Y_scatter) 
 ```
 
@@ -121,6 +125,6 @@ Size <- cbind(row_number(Size),Size)
 Size
 ```
 
-Thanks for using this app.
+  **Thanks for using this app!**
 
 

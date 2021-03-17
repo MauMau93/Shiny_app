@@ -61,6 +61,7 @@ Outcome <- params$DATOS[,9]
 You have chose the following variables to inspect:
 
 ```{r,echo=FALSE}
+DATOS <- params$DATOS
 params$X_scatter
 params$Y_scatter
 ```

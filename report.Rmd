@@ -1,7 +1,6 @@
 ---
 title: "Report"
 author: "Mauricio Marcos Fajgenbaun"
-date: "11/3/2021"
 output: pdf_document
 params: 
   DATOS: NA
@@ -47,7 +46,7 @@ library("scatterplot3d")
 ```
 
 
-## Plots
+## Main Results
 
 First, we can visualize a histogram for both of the different variables selected and a scatter plot for them two.
 
@@ -56,6 +55,7 @@ x <- DATOS%>% select(params$X_scatter)
 y <- DATOS%>% select(params$Y_scatter)
 x=as.vector(as.matrix(x))
 y=as.vector(as.matrix(y))
+Outcome <- params$DATOS[,9]
 ```
 
 You have chose the following variables to inspect:
@@ -65,7 +65,7 @@ params$X_scatter
 params$Y_scatter
 ```
 
-
+## The histograms:
 
 ```{r,echo=FALSE}
 ggplot(params$DATOS, aes(x=x)) + geom_histogram(position = "dodge") +
@@ -96,7 +96,7 @@ params$knn_y
 params$knn_z
 ```
 
-you have also chosen the following number of clusters:
+You have also chosen the following number of clusters:
 ```{r,echo=FALSE}
 params$clusters
 ```
@@ -119,4 +119,7 @@ Size <- data.frame(fit$size)
 Size <- cbind(row_number(Size),Size)
 Size
 ```
+
+Thanks for using this app.
+
 

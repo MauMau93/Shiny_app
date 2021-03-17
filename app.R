@@ -107,7 +107,7 @@ ui <- navbarPage(theme = shinytheme("journal"),
                               column(4, selectInput("featureDisplay_x", 
                                                     label = h3("X-Axis Feature"), 
                                                     choices = feature.list,
-                                                    selected = feature.list[1])),
+                                                    selected = feature.list[3])),
                               column(4, selectInput("featureDisplay_y", 
                                                     label = h3("Y-Axis Feature"), 
                                                     choices = feature.list,
@@ -133,9 +133,9 @@ ui <- navbarPage(theme = shinytheme("journal"),
                 # Fourth Panel: Clustering
                  tabPanel("k-means clustering",
                      sidebarPanel(
-                         selectInput("select1", label= "Choose X Variable", variables, selected = 1),
-                         selectInput("select2", label= "Choose Y Variable", variables, selected = 2),
-                         selectInput("select3", label= "Choose Z Variable", variables, selected = 3),
+                         selectInput("select1", label= "Choose X Variable", variables, selected = variables[1]),
+                         selectInput("select2", label= "Choose Y Variable", variables, selected = variables[2]),
+                         selectInput("select3", label= "Choose Z Variable", variables, selected = variables[3]),
                          sliderInput('clusters', label= "Number of Clusters", 1, min = 1, max = 9)
                      ),
                      mainPanel(
